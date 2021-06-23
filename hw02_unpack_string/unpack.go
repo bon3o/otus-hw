@@ -26,11 +26,10 @@ func Unpack(str string) (string, error) {
 				countDigits++
 				if countDigits > 1 {
 					return "", ErrInvalidString
-				} else {
-					digit, _ := strconv.Atoi(string(val))
-					bstring.WriteString(strings.Repeat(string(previousValue), digit))
-					previousValue = 0
 				}
+				digit, _ := strconv.Atoi(string(val))
+				bstring.WriteString(strings.Repeat(string(previousValue), digit))
+				previousValue = 0
 			case unicode.IsLetter(val):
 				if previousValue != 0 {
 					bstring.WriteString(string(previousValue))
@@ -54,7 +53,6 @@ func Unpack(str string) (string, error) {
 			bstring.WriteString(string(previousValue))
 		}
 		return bstring.String(), nil
-	} else {
-		return "", nil
 	}
+	return "", nil
 }
