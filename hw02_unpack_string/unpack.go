@@ -7,7 +7,10 @@ import (
 	"unicode"
 )
 
-var ErrInvalidString = errors.New("invalid string")
+var ErrInvalidChar = errors.New("string contains invalid characters")
+var ErrMultDigits = errors.New("string contains multiple digits")
+var ErrControl = errors.New("incorrect usage of control symbol followed by letter")
+var ErrStartsWithDigit = errors.New("string starts with a digit")
 
 func Unpack(str string) (string, error) {
 	var bstring strings.Builder
@@ -20,19 +23,19 @@ func Unpack(str string) (string, error) {
 	for i, val := range str {
 		switch {
 		case unicode.IsDigit(val) && i == 0:
-			return "", ErrInvalidString
+			return "", ErrStartsWithDigit
 		case unicode.IsDigit(val) && foundControl:
 			previousValue = val
 			foundControl = !foundControl
 		case unicode.IsDigit(val):
 			countDigits++
 			if countDigits > 1 {
-				return "", ErrInvalidString
+				return "", ErrMultDigits
 			}
 			digit, _ := strconv.Atoi(string(val))
 			bstring.WriteString(strings.Repeat(string(previousValue), digit))
 			previousValue = 0
-		case unicode.IsLetter(val):
+		case unicode.IsLetter(val) && !foundControl:
 			if previousValue != 0 {
 				bstring.WriteString(string(previousValue))
 			}
@@ -42,13 +45,17 @@ func Unpack(str string) (string, error) {
 			previousValue = val
 			countDigits = 0
 		case unicode.IsLetter(val) && foundControl:
-			return "", ErrInvalidString
+			return "", ErrControl
 		case val == 92 && foundControl:
 			previousValue = val
 			foundControl = !foundControl
 		case val == 92:
-			bstring.WriteString(string(previousValue))
+			if previousValue != 0 {
+				bstring.WriteString(string(previousValue))
+			}
 			foundControl = !foundControl
+		default:
+			return "", ErrInvalidChar
 		}
 	}
 	if previousValue != 0 {
