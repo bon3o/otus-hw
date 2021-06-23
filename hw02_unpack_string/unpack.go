@@ -10,7 +10,7 @@ import (
 var (
 	ErrInvalidChar     = errors.New("string contains invalid characters")
 	ErrMultDigits      = errors.New("string contains multiple digits")
-	ErrControl         = errors.New("incorrect usage of control symbol followed by letter")
+	ErrControl         = errors.New("incorrect usage of control symbol followed by a letter")
 	ErrStartsWithDigit = errors.New("string starts with a digit")
 )
 
