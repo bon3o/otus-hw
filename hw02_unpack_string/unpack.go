@@ -7,10 +7,12 @@ import (
 	"unicode"
 )
 
-var ErrInvalidChar = errors.New("string contains invalid characters")
-var ErrMultDigits = errors.New("string contains multiple digits")
-var ErrControl = errors.New("incorrect usage of control symbol followed by letter")
-var ErrStartsWithDigit = errors.New("string starts with a digit")
+var (
+	ErrInvalidChar     = errors.New("string contains invalid characters")
+	ErrMultDigits      = errors.New("string contains multiple digits")
+	ErrControl         = errors.New("incorrect usage of control symbol followed by letter")
+	ErrStartsWithDigit = errors.New("string starts with a digit")
+)
 
 func Unpack(str string) (string, error) {
 	var bstring strings.Builder
