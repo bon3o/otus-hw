@@ -12,6 +12,7 @@ func Top10(text string) []string {
 	if len(text) == 0 {
 		return nil
 	}
+	var top int
 	finalSlice := make([]string, 0)
 	type pairs struct {
 		Word  string
@@ -29,10 +30,8 @@ func Top10(text string) []string {
 					allStrings = append(allStrings, strings.ToLower(i))
 				}
 			}
-		} else {
-			if splittedStr[0] != "-" {
-				allStrings = append(allStrings, strings.ToLower(splittedStr[0]))
-			}
+		} else if splittedStr[0] != "-" {
+			allStrings = append(allStrings, strings.ToLower(splittedStr[0]))
 		}
 	}
 	for _, str := range allStrings {
@@ -47,9 +46,13 @@ func Top10(text string) []string {
 		}
 		return collectedStringsSlice[i].Count > collectedStringsSlice[j].Count
 	})
-	for _, v := range collectedStringsSlice[:10] {
+	if len(collectedStringsSlice) > 10 {
+		top = 10
+	} else {
+		top = len(collectedStringsSlice)
+	}
+	for _, v := range collectedStringsSlice[:top] {
 		finalSlice = append(finalSlice, v.Word)
 	}
-	//fmt.Println(finalSlice)
 	return finalSlice
 }
