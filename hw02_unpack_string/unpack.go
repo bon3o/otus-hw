@@ -14,11 +14,15 @@ var (
 	ErrStartsWithDigit = errors.New("string starts with a digit")
 )
 
+const escapeSymbol rune = 92
+
 func Unpack(str string) (string, error) {
-	var bstring strings.Builder
-	var countDigits int
-	var previousValue rune
-	var foundControl bool
+	var (
+		countDigits   int
+		foundControl  bool
+		previousValue rune
+		bstring       strings.Builder
+	)
 	if len(str) == 0 {
 		return "", nil
 	}
@@ -34,7 +38,10 @@ func Unpack(str string) (string, error) {
 			if countDigits > 1 {
 				return "", ErrMultDigits
 			}
-			digit, _ := strconv.Atoi(string(val))
+			digit, err := strconv.Atoi(string(val))
+			if err != nil {
+				return "", ErrInvalidChar
+			}
 			bstring.WriteString(strings.Repeat(string(previousValue), digit))
 			previousValue = 0
 		case unicode.IsLetter(val) && !foundControl:
@@ -48,10 +55,10 @@ func Unpack(str string) (string, error) {
 			countDigits = 0
 		case unicode.IsLetter(val) && foundControl:
 			return "", ErrControl
-		case val == 92 && foundControl:
+		case val == escapeSymbol && foundControl:
 			previousValue = val
 			foundControl = !foundControl
-		case val == 92:
+		case val == escapeSymbol:
 			if previousValue != 0 {
 				bstring.WriteString(string(previousValue))
 			}
