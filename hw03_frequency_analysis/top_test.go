@@ -7,7 +7,7 @@ import (
 )
 
 // Change to true if needed.
-var taskWithAsteriskIsCompleted = false
+var taskWithAsteriskIsCompleted = true
 
 var text = `Как видите, он  спускается  по  лестнице  вслед  за  своим
 	другом   Кристофером   Робином,   головой   вниз,  пересчитывая
@@ -43,6 +43,58 @@ var text = `Как видите, он  спускается  по  лестни�
 	посидеть у огня и послушать какую-нибудь интересную сказку.
 		В этот вечер...`
 
+var textWithCommas = `Этот текст,написанный без пробелов после 
+	запятых,должен без ошибок пройти частотный анализ.Также,ТекСт 
+	написан словамис рандомным регистром,что должно показать,что 
+	это не 	имеет значения. Текст,теКст,ТЕКСТ,текст!!!`
+
+var textLorem = `Maecenas ipsum velit, consectetuer eu, lobortis ut, 
+	dictum at, dui. In rutrum. Sed ac dolor sit amet purus malesuada 
+	congue. In laoreet, magna id viverra tincidunt, sem odio bibendum 
+	justo, vel imperdiet sapien wisi sed libero. Suspendisse sagittis 
+	ultrices augue. Mauris metus. Nunc dapibus tortor vel mi dapibus 
+	sollicitudin. Etiam posuere lacus quis dolor. Praesent id justo 
+	in neque elementum ultrices. Class aptent taciti sociosqu ad litora 
+	torquent per conubia nostra, per inceptos hymenaeos. In convallis. 
+	Fusce suscipit libero eget elit. Praesent vitae arcu tempor neque 
+	lacinia pretium. Morbi imperdiet, mauris ac auctor dictum, nisl 
+	ligula egestas nulla, et sollicitudin sem purus in lacus. 
+	Morbi leo mi, nonummy eget, tristique non, rhoncus non, leo. 
+	Nullam faucibus mi quis velit. Integer in sapien. Fusce tellus odio, 
+	dapibus id, fermentum quis, suscipit id, erat. Fusce aliquam vestibulum 
+	ipsum. Aliquam erat volutpat. Pellentesque sapien. Cras elementum. 
+	Nulla pulvinar eleifend sem. Cum sociis natoque penatibus et magnis 
+	dis parturient montes, nascetur ridiculus mus. Quisque porta. 
+	Vivamus porttitor turpis ac leo. Aenean placerat. In vulputate 
+	urna eu arcu. Aliquam erat volutpat. Suspendisse potenti. Morbi 
+	mattis felis at nunc. Duis viverra diam non justo. In nisl. Nullam 
+	sit amet magna in magna gravida vehicula. Mauris tincidunt sem sed 
+	arcu. Nunc posuere. Nullam lectus justo, vulputate eget, mollis sed, 
+	tempor sed, magna. Cum sociis natoque penatibus et magnis dis 
+	parturient montes, nascetur ridiculus mus. Etiam neque. Curabitur 
+	ligula sapien, pulvinar a, vestibulum quis, facilisis vel, sapien. 
+	Nullam eget nisl. Donec vitae arcu. Lorem ipsum dolor sit amet, 
+	consectetuer adipiscing elit. Morbi gravida libero nec velit. 
+	Morbi scelerisque luctus velit. Etiam dui sem, fermentum vitae, 
+	sagittis id, malesuada in, quam. Proin mattis lacinia justo. 
+	Vestibulum facilisis auctor urna. Aliquam in lorem sit amet leo 
+	accumsan lacinia. Integer rutrum, orci vestibulum ullamcorper ultricies, 
+	lacus quam ultricies odio, vitae placerat pede sem sit amet enim. 
+	Phasellus et lorem id felis nonummy placerat. Fusce dui leo, imperdiet in, 
+	aliquam sit amet, feugiat eu, orci. Aenean vel massa quis mauris 
+	vehicula lacinia. Quisque tincidunt scelerisque libero. Maecenas libero. 
+	Etiam dictum tincidunt diam. Donec ipsum massa, ullamcorper in, auctor et, 
+	scelerisque sed, est. Suspendisse nisl. Sed convallis magna eu sem. 
+	Cras pede libero, dapibus nec, pretium sit amet, tempor quis, urna.
+	In sem justo, commodo ut, suscipit at, pharetra vitae, orci. Duis 
+	sapien nunc, commodo et, interdum suscipit, sollicitudin et, dolor. 
+	Pellentesque habitant morbi tristique senectus et netus et malesuada 
+	fames ac turpis egestas. Aliquam id dolor. Class aptent taciti 
+	sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. 
+	Mauris dictum facilisis`
+
+var shortText = "Очень, очень короткий рассказ..."
+
 func TestTop10(t *testing.T) {
 	t.Run("no words in empty string", func(t *testing.T) {
 		require.Len(t, Top10(""), 0)
@@ -77,6 +129,50 @@ func TestTop10(t *testing.T) {
 				"то",        // 4
 			}
 			require.Equal(t, expected, Top10(text))
+		}
+	})
+	t.Run("different register test", func(t *testing.T) {
+		if taskWithAsteriskIsCompleted {
+			expected := []string{
+				"текст",    // 6
+				"без",      // 2
+				"что",      // 2
+				"анализ",   // 1
+				"должен",   // 1
+				"должно",   // 1
+				"запятых",  // 1
+				"значения", // 1
+				"имеет",    // 1
+				"написан",  // 1
+			}
+			require.Equal(t, expected, Top10(textWithCommas))
+		}
+	})
+	t.Run("different register test", func(t *testing.T) {
+		if taskWithAsteriskIsCompleted {
+			expected := []string{
+				"in",      // 14
+				"et",      // 9
+				"sem",     // 8
+				"amet",    // 7
+				"id",      // 7
+				"sed",     // 7
+				"sit",     // 7
+				"aliquam", // 6
+				"justo",   // 6
+				"libero",  // 6
+			}
+			require.Equal(t, expected, Top10(textLorem))
+		}
+	})
+	t.Run("different register test", func(t *testing.T) {
+		if taskWithAsteriskIsCompleted {
+			expected := []string{
+				"очень",    // 2
+				"короткий", // 1
+				"рассказ",  // 1
+			}
+			require.Equal(t, expected, Top10(shortText))
 		}
 	})
 }
