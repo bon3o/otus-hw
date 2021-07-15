@@ -49,7 +49,7 @@ linters:
     - govet
     - ifshort
     - ineffassign
-    - misspell
+    #- misspell
     - nestif
     - noctx
     - nolintlint
