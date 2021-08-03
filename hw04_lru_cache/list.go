@@ -1,6 +1,5 @@
 package hw04lrucache
 
-
 type List interface {
 	Len() int
 	Front() *ListItem
@@ -106,6 +105,3 @@ func (l *list) MoveToFront(i *ListItem) {
 func NewList() List {
 	return new(list)
 }
-
-
-func
