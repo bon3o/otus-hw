@@ -1,4 +1,4 @@
-package hw04lrucache
+package hw04_lru_cache
 
 import (
 	"testing"
@@ -13,6 +13,25 @@ func TestList(t *testing.T) {
 		require.Equal(t, 0, l.Len())
 		require.Nil(t, l.Front())
 		require.Nil(t, l.Back())
+	})
+
+	t.Run("push", func(t *testing.T) {
+		l := NewList()
+
+		l.PushFront(10) // [10]
+		l.PushFront(20) // [20, 10]
+		l.PushBack(30)  // [20, 10, 30]
+		require.Equal(t, 3, l.Len())
+		first := l.Front() // 20
+		last := l.Back()   // 30
+
+		require.Equal(t, 20, first.Value)
+		require.Equal(t, 10, first.Next.Value)
+		require.Equal(t, (*ListItem)(nil), first.Prev)
+
+		require.Equal(t, 30, last.Value)
+		require.Equal(t, (*ListItem)(nil), last.Next)
+		require.Equal(t, 10, last.Prev.Value)
 	})
 
 	t.Run("push front to empty list", func(t *testing.T) {
@@ -37,25 +56,6 @@ func TestList(t *testing.T) {
 		require.Equal(t, 10, first.Value)
 		require.Equal(t, (*ListItem)(nil), first.Next)
 		require.Equal(t, (*ListItem)(nil), first.Prev)
-	})
-
-	t.Run("push", func(t *testing.T) {
-		l := NewList()
-
-		l.PushFront(10) // [10]
-		l.PushFront(20) // [20, 10]
-		l.PushBack(30)  // [20, 10, 30]
-		require.Equal(t, 3, l.Len())
-		first := l.Front() // 20
-		last := l.Back()   // 30
-
-		require.Equal(t, 20, first.Value)
-		require.Equal(t, 10, first.Next.Value)
-		require.Equal(t, (*ListItem)(nil), first.Prev)
-
-		require.Equal(t, 30, last.Value)
-		require.Equal(t, (*ListItem)(nil), last.Next)
-		require.Equal(t, 10, last.Prev.Value)
 	})
 
 	t.Run("remove", func(t *testing.T) {
