@@ -36,7 +36,6 @@ func (l *list) Back() *ListItem {
 
 func (l *list) PushFront(v interface{}) *ListItem {
 	item := &ListItem{Value: v}
-
 	if l.Length == 0 {
 		l.LastItem = item
 	} else {
@@ -44,14 +43,12 @@ func (l *list) PushFront(v interface{}) *ListItem {
 		l.FirstItem.Prev = item
 	}
 	l.FirstItem = item
-
 	l.Length++
 	return item
 }
 
 func (l *list) PushBack(v interface{}) *ListItem {
 	item := &ListItem{Value: v}
-
 	if l.Length == 0 {
 		l.FirstItem = item
 	} else {
@@ -59,7 +56,6 @@ func (l *list) PushBack(v interface{}) *ListItem {
 		l.LastItem.Next = item
 	}
 	l.LastItem = item
-
 	l.Length++
 	return item
 }

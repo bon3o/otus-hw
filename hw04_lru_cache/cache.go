@@ -24,45 +24,37 @@ type cacheItem struct {
 func (c *lruCache) Set(key Key, value interface{}) bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-
 	item, ok := c.items[key]
 	if ok {
 		c.queue.MoveToFront(item)
 		item.Value = cacheItem{key: key, value: value}
 		return true
 	}
-
 	i := cacheItem{key: key, value: value}
 	c.queue.PushFront(i)
 	c.items[key] = c.queue.Front()
-
 	if len(c.items) > c.capacity {
 		out := c.queue.Back()
 		c.queue.Remove(out)
 		delete(c.items, out.Value.(cacheItem).key)
 	}
-
 	return false
 }
 
 func (c *lruCache) Get(key Key) (interface{}, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-
 	item, ok := c.items[key]
 	if !ok {
 		return nil, false
 	}
-
 	c.queue.MoveToFront(item)
-
 	return item.Value.(cacheItem).value, true
 }
 
 func (c *lruCache) Clear() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-
 	item := c.queue.Back()
 	for {
 		delete(c.items, item.Value.(cacheItem).key)
