@@ -66,7 +66,6 @@ func (l *list) Remove(i *ListItem) {
 	} else {
 		i.Prev.Next = i.Next
 	}
-
 	if i.Next == nil {
 		l.LastItem = i.Prev
 	} else {
