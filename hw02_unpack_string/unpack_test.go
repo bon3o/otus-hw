@@ -17,10 +17,11 @@ func TestUnpack(t *testing.T) {
 		{input: "", expected: ""},
 		{input: "aaa0b", expected: "aab"},
 		// uncomment if task with asterisk completed
-		// {input: `qwe\4\5`, expected: `qwe45`},
-		// {input: `qwe\45`, expected: `qwe44444`},
-		// {input: `qwe\\5`, expected: `qwe\\\\\`},
-		// {input: `qwe\\\3`, expected: `qwe\3`},
+		{input: `qwe\4\5`, expected: `qwe45`},
+		{input: `qwe\45`, expected: `qwe44444`},
+		{input: `qwe\\5`, expected: `qwe\\\\\`},
+		{input: `qwe\\\3`, expected: `qwe\3`},
+		{input: `\45`, expected: "44444"},
 	}
 
 	for _, tc := range tests {
@@ -33,13 +34,46 @@ func TestUnpack(t *testing.T) {
 	}
 }
 
-func TestUnpackInvalidString(t *testing.T) {
-	invalidStrings := []string{"3abc", "45", "aaa10b"}
+func TestUnpackDigitStart(t *testing.T) {
+	invalidStrings := []string{"3abc", "45"}
 	for _, tc := range invalidStrings {
 		tc := tc
 		t.Run(tc, func(t *testing.T) {
 			_, err := Unpack(tc)
-			require.Truef(t, errors.Is(err, ErrInvalidString), "actual error %q", err)
+			require.Truef(t, errors.Is(err, ErrStartsWithDigit), "actual error %q", err)
+		})
+	}
+}
+
+func TestUnpackMultDigits(t *testing.T) {
+	invalidStrings := []string{"qwerty12qwe", "aaa10b"}
+	for _, tc := range invalidStrings {
+		tc := tc
+		t.Run(tc, func(t *testing.T) {
+			_, err := Unpack(tc)
+			require.Truef(t, errors.Is(err, ErrMultDigits), "actual error %q", err)
+		})
+	}
+}
+
+func TestUnpackControlWrong(t *testing.T) {
+	invalidStrings := []string{`some\string`, `more\\\escapes`}
+	for _, tc := range invalidStrings {
+		tc := tc
+		t.Run(tc, func(t *testing.T) {
+			_, err := Unpack(tc)
+			require.Truef(t, errors.Is(err, ErrControl), "actual error %q", err)
+		})
+	}
+}
+
+func TestUnpackInvalidChar(t *testing.T) {
+	invalidStrings := []string{`@#`, `some$tring`}
+	for _, tc := range invalidStrings {
+		tc := tc
+		t.Run(tc, func(t *testing.T) {
+			_, err := Unpack(tc)
+			require.Truef(t, errors.Is(err, ErrInvalidChar), "actual error %q", err)
 		})
 	}
 }
