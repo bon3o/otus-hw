@@ -38,6 +38,42 @@ func TestRun(t *testing.T) {
 		require.LessOrEqual(t, runTasksCount, int32(workersCount+maxErrorsCount), "extra tasks were started")
 	})
 
+	t.Run("no workers error", func(t *testing.T) {
+		taskCount := 10
+		workerCount := 0
+		tasks := make([]Task, 0, taskCount)
+		var runTasksCount int32
+		for i := 0; i < taskCount; i++ {
+			taskSleep := time.Millisecond * time.Duration(rand.Intn(100))
+			tasks = append(tasks, func() error {
+				time.Sleep(taskSleep)
+				atomic.AddInt32(&runTasksCount, 1)
+				return nil
+			})
+		}
+		result := Run(tasks, workerCount, 0)
+		require.Equal(t, ErrNoWorkersPassed, result)
+		require.Equal(t, int32(0), runTasksCount)
+	})
+
+	t.Run("negative workers error", func(t *testing.T) {
+		taskCount := 10
+		workerCount := -10
+		tasks := make([]Task, 0, taskCount)
+		var runTasksCount int32
+		for i := 0; i < taskCount; i++ {
+			taskSleep := time.Millisecond * time.Duration(rand.Intn(100))
+			tasks = append(tasks, func() error {
+				time.Sleep(taskSleep)
+				atomic.AddInt32(&runTasksCount, 1)
+				return nil
+			})
+		}
+		result := Run(tasks, workerCount, 0)
+		require.Equal(t, ErrNegativeWorkerCount, result)
+		require.Equal(t, int32(0), runTasksCount)
+	})
+
 	t.Run("tasks without errors", func(t *testing.T) {
 		tasksCount := 50
 		tasks := make([]Task, 0, tasksCount)
